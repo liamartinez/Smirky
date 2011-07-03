@@ -17,6 +17,8 @@ rect(width/6,height/6,height/6,width/20);
 rect(width/12,height/12,height/6,width/20);
 
 
+println("latest updates");
+
 
 
 }
