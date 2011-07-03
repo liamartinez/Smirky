@@ -18,7 +18,7 @@ rect(width/12,height/12,height/6,width/20);
 
 
 println("latest updates");
-
+println("I will always love Lia Martinez");
 
 
 }
