@@ -33,6 +33,7 @@ int previousLevel = 2;
 
 int[] depth;
 
+boolean enableMask = false; 
 
 
 
@@ -86,11 +87,11 @@ void draw() {
   
   background(0);
 
-
-
-
   depth = kinect.getRawDepth();
+  enableMask(); 
 
+
+/*
   // keep track of the deepest depth that we know about. this is for sound and for the movies. 
   float deepestdepth = 2000;
   float averagedepth = 0;
@@ -114,21 +115,16 @@ void draw() {
   }
 
  averagedepth = averagedepth / numpoints;
-
+*/
 
    //blurring the kinect data : enable this if needed      
-   
+   /*
    blurredDepthImg = new PImage( 640, 480 );
    System.arraycopy( kinect.getDepthImage().pixels, 0, blurredDepthImg.pixels, 0, kinect.getDepthImage().pixels.length );
    fastblur( blurredDepthImg, 15 ); // change the last number for the radius of the blur
+   */
    
-   
 
-
-
-
-
-  // go through the entire banana
   ////////////////////////////////////////////////////////////////////////////////////////// THIS IS THE BIG FOR LOOP
 
   for (int x = 0; x < 640; x++) {
@@ -137,24 +133,22 @@ void draw() {
       int p = (640 * y) + x; 
 
 
-
-
+    
+ 
+          
 
       // is this a black pixel in the image mask?
       color maskcolor = imgMask.pixels[p];
       float redness = red(maskcolor);
 
-      if (redness > 50)
+      if (enableMask && redness > 50)
       {
-        surface.pixels[p] = level1.pixels[p];
+        surface.pixels[p] = color (0,0,0);
       }
 
 
-      ///////////////////////////// THIS IS FOR LEFT IMAGE ////////////////////////////////
-
-/*
       // calculate the percentage values for each level
-      if (depth[p] > Threshold1)
+      else if (depth[p] > Threshold1)
       {
         surface.pixels[p] = level1.pixels[p];
       }
@@ -174,9 +168,11 @@ void draw() {
     surface.pixels[p] = level4.pixels[p];
      }
 
-*/
+
       // we start blending here
 
+
+/*
        if (depth[p] < Threshold1 && depth[p] > Threshold2)
       {
         // map between level 1 and level 2
@@ -260,8 +256,17 @@ void draw() {
         // assign that color to this pixel
         surface.pixels[p] = newcolor;
         
+      }
+  */      
+        
+  
        
-      }        
+       
+       
+       
+       
+       
+              
 
       // all else fails -- do this        
       else
@@ -283,10 +288,15 @@ void draw() {
 
 /////////////////////////////////////////////////////////////////////////////////// END DRAW //////////////////////////////////////////////////////////
 
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+void enableMask() {
+  enableMask = true;
+}
+  
 
 
-
-
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 void mouseClicked() {
@@ -295,6 +305,7 @@ void mouseClicked() {
   println(depth[p]);
 }
 
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 public void keyPressed() {
@@ -335,6 +346,8 @@ public void keyPressed() {
   println("Level 1:" + Threshold1 + " , Level 2: " + Threshold2 + " ,Level 3:" + Threshold3 + " , Level 4 " + Threshold4 + " , Level 5 " + Threshold5);
 }
 
+
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 void fastblur(PImage img, int radius) {
   if (radius<1) {
@@ -413,7 +426,7 @@ void fastblur(PImage img, int radius) {
 }
 
 
-
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 void stop () {
 
