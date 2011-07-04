@@ -72,6 +72,7 @@ void setup() {
   surface = new PImage(640, 480);
 
 
+  
 
 }
 
@@ -85,37 +86,34 @@ void setup() {
 
 void draw() { 
   
+  depth = kinect.getRawDepth();
   background(0);
 
-  depth = kinect.getRawDepth();
-  enableMask(); 
+
+  enableMask(); //remove this if you dont want to use a mask
+  
+  drawSurface(); //the original without blending
+  //drawSurfaceBlended(); //with blending
+  
+  image (surface, 0,0); 
 
 
-/*
-  // keep track of the deepest depth that we know about. this is for sound and for the movies. 
-  float deepestdepth = 2000;
-  float averagedepth = 0;
-  float numpoints = 0;
+}
 
-  for (int x = 300; x < 350; x++) {
-    for (int y = 200; y < 250; y++) {
-      int p = (640 * y) + x;
 
-      // get the depth at this location
-      float currentdepth = depth[p];
 
-      averagedepth = averagedepth + currentdepth;
-      numpoints++;
 
-      if (currentdepth < deepestdepth)
-      {
-        deepestdepth = currentdepth;
-      }
-    }
-  }
 
- averagedepth = averagedepth / numpoints;
-*/
+
+
+
+
+
+
+
+
+// next on to do list: make a function for blur
+
 
    //blurring the kinect data : enable this if needed      
    /*
@@ -125,22 +123,19 @@ void draw() {
    */
    
 
-  ////////////////////////////////////////////////////////////////////////////////////////// THIS IS THE BIG FOR LOOP
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-  for (int x = 0; x < 640; x++) {
+void drawSurface(){
+ for (int x = 0; x < 640; x++) {
     for (int y = 0; y < 480; y++) {
 
       int p = (640 * y) + x; 
-
-
-    
- 
-          
+   
 
       // is this a black pixel in the image mask?
+
       color maskcolor = imgMask.pixels[p];
       float redness = red(maskcolor);
-
       if (enableMask && redness > 50)
       {
         surface.pixels[p] = color (0,0,0);
@@ -169,11 +164,40 @@ void draw() {
      }
 
 
-      // we start blending here
+      // all else fails -- do this        
+      else
+      {
+        surface.pixels[p] = level1.pixels[p];
+      }
+
+    }
+
+  }  
+
+}
 
 
-/*
-       if (depth[p] < Threshold1 && depth[p] > Threshold2)
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+void drawSurfaceBlended(){
+
+
+  for (int x = 0; x < 640; x++) {
+    for (int y = 0; y < 480; y++) {
+
+      int p = (640 * y) + x;           
+
+      // is this a black pixel in the image mask?
+
+      color maskcolor = imgMask.pixels[p];
+      float redness = red(maskcolor);
+      if (enableMask && redness > 50)
+      {
+        surface.pixels[p] = color (0,0,0);
+      }
+
+
+       else if (depth[p] < Threshold1 && depth[p] > Threshold2)
       {
         // map between level 1 and level 2
         float percent_level1 = map(depth[p], Threshold2, Threshold1, 0, 1); 
@@ -257,17 +281,7 @@ void draw() {
         surface.pixels[p] = newcolor;
         
       }
-  */      
-        
-  
-       
-       
-       
-       
-       
-       
-              
-
+ 
       // all else fails -- do this        
       else
       {
@@ -277,16 +291,11 @@ void draw() {
     }
 
   }  
-  image (surface, 0,0); 
- // image (blurredDepthImg, 0,0);
   
   
+
+
 }
-
-
-
-
-/////////////////////////////////////////////////////////////////////////////////// END DRAW //////////////////////////////////////////////////////////
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
