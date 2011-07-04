@@ -1,9 +1,17 @@
 
-
+//Kinect
 import org.openkinect.*;
 import org.openkinect.processing.*;
-
 Kinect kinect;
+
+//Toxi
+import toxi.audio.*;
+import toxi.geom.*;
+
+//Audio
+AudioSource sound[];
+SoundListener listener;
+JOALUtil audioSys;
 
 // Size of kinect image
 int w = 640;
@@ -13,11 +21,9 @@ PImage level1;
 PImage level2;
 PImage level3;
 PImage level4;
-
 PImage imgMask; 
 PImage surface;
 
-//mb edits
 PImage depthDataImg;
 PImage blurredDepthImg;
 
@@ -28,12 +34,12 @@ int Threshold3 = 770;
 int Threshold4 = 660;
 int Threshold5 = 350;
 
-int currentLevel = 1;
-int previousLevel = 2;
-
 int[] depth;
 
 boolean enableMask = false; 
+
+float returnValue;
+
 
 
 
@@ -41,9 +47,10 @@ boolean enableMask = false;
 
 void setup() {
 
-  size(640, 480,P3D);
-
-
+  size(w, h,P2D);
+  
+  
+  //initialize startup sequence
   println ("Initializing Kiwis .... "); 
   println ("Collecting Watermelons .... "); 
   println ("Calibrating Bananas ...."); 
@@ -55,6 +62,30 @@ void setup() {
   println ("To calibrate Level 4: u and i")  ;
   println ("To calibrate Level 5: o and p "); 
  
+  //initialize Kinect
+  kinect = new Kinect(this);
+  kinect.start();
+  kinect.enableDepth(true);
+  kinect.processDepthImage(true);
+  
+  //initialize Audio
+  audioSys = JOALUtil.getInstance();
+  listener=audioSys.getListener();
+
+  sound = new AudioSource[1];
+
+  sound[0]=audioSys.generateSourceFromFile(dataPath("WIND1_11.wav"));
+  sound[0].setPosition(300, 0, 0); 
+  sound[0].setReferenceDistance(20);
+
+  sound[0].setLooping(true);
+  sound[0].play();
+ 
+
+  for (int g = 0; g < sound.length; g++) {
+    sound[g].play();
+  }
+  
   
   level4 = loadImage("LVL4HELL.png");
   level3 = loadImage("LVL3GEMS2.png");
@@ -64,14 +95,11 @@ void setup() {
   imgMask = loadImage ("newmask2.jpg"); 
   imgMask.loadPixels();
 
-  kinect = new Kinect(this);
-  kinect.start();
-  kinect.enableDepth(true);
-  kinect.processDepthImage(true);
+
 
   surface = new PImage(640, 480);
 
-
+  
   
 
 }
@@ -91,11 +119,14 @@ void draw() {
 
 
   enableMask(); //remove this if you dont want to use a mask
-  
   drawSurface(); //the original without blending
   //drawSurfaceBlended(); //with blending
   
-  image (surface, 0,0); 
+  getDeepestDepth(); //get the deepest depth based on a narrow area in the middle
+  enableAudio(); 
+ 
+  
+  image (surface, 0,0); //draw the surface
 
 
 }
@@ -133,7 +164,6 @@ void drawSurface(){
    
 
       // is this a black pixel in the image mask?
-
       color maskcolor = imgMask.pixels[p];
       float redness = red(maskcolor);
       if (enableMask && redness > 50)
@@ -296,6 +326,65 @@ void drawSurfaceBlended(){
 
 
 }
+
+
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void enableAudio() {
+//enableAudio needs getDeepestDepth() declared
+
+    /* //need loop?
+    for (int x = 0; x < 640; x++) {
+    for (int y = 0; y < 480; y++) {  
+    */  
+    listener.setPosition(getDeepestDepth()-450, 0, 0);
+    println(getDeepestDepth());
+
+}
+
+
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------
+float getDeepestDepth() {
+//getDeepestDepth is for audio or anything that needs to change based on deepest depth, not pixel by pixel
+  
+  float deepestdepth = 2000;
+  float averagedepth = 0;
+  float numpoints = 0;
+
+  for (int x = 300; x < 350; x++) {
+    for (int y = 200; y < 250; y++) {
+      int p = (640 * y) + x;
+
+      // get the depth at this location
+      float currentdepth = depth[p];
+
+      averagedepth = averagedepth + currentdepth;
+      numpoints++;
+
+      if (currentdepth < deepestdepth)
+      {
+        deepestdepth = currentdepth;
+
+      }
+      
+      returnValue = deepestdepth;
+
+      
+    }
+  }
+
+/* //this doesnt work; fix
+averagedepth = averagedepth / numpoints; 
+println ("average " + averagedepth);
+println ("numpoint " + numpoints);
+println ("deepest " + deepestdepth);
+
+*/
+
+
+return returnValue; 
+
+}
+
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
