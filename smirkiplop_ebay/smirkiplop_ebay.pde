@@ -38,6 +38,7 @@ int[] depth;
 
 boolean enableMask = false; 
 
+
 float returnValue;
 
 
@@ -49,6 +50,7 @@ void setup() {
 
   size(w, h,P2D);
   
+
   
   //initialize startup sequence
   println ("Initializing Kiwis .... "); 
@@ -68,23 +70,9 @@ void setup() {
   kinect.enableDepth(true);
   kinect.processDepthImage(true);
   
-  //initialize Audio
-  audioSys = JOALUtil.getInstance();
-  listener=audioSys.getListener();
 
-  sound = new AudioSource[1];
-
-  sound[0]=audioSys.generateSourceFromFile(dataPath("WIND1_11.wav"));
-  sound[0].setPosition(300, 0, 0); 
-  sound[0].setReferenceDistance(20);
-
-  sound[0].setLooping(true);
-  sound[0].play();
+  //setupAudio();     //disable this if you dont want audio
  
-
-  for (int g = 0; g < sound.length; g++) {
-    sound[g].play();
-  }
   
   
   level4 = loadImage("LVL4HELL.png");
@@ -123,7 +111,7 @@ void draw() {
   //drawSurfaceBlended(); //with blending
   
   getDeepestDepth(); //get the deepest depth based on a narrow area in the middle
-  enableAudio(); 
+ // enableAudio(); //remember to enable setupAudio() in the setup 
  
   
   image (surface, 0,0); //draw the surface
@@ -329,8 +317,34 @@ void drawSurfaceBlended(){
 
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void setupAudio() {
+
+ //initialize Audio
+  audioSys = JOALUtil.getInstance();
+  listener=audioSys.getListener();
+
+  sound = new AudioSource[1];
+
+  sound[0]=audioSys.generateSourceFromFile(dataPath("WIND1_11.wav"));
+  sound[0].setPosition(300, 0, 0); 
+  sound[0].setReferenceDistance(20);
+
+  sound[0].setLooping(true);
+  sound[0].play();
+ 
+
+  for (int g = 0; g < sound.length; g++) {
+    sound[g].play();
+  }
+
+}
+
+
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void enableAudio() {
 //enableAudio needs getDeepestDepth() declared
+
+
 
     /* //need loop?
     for (int x = 0; x < 640; x++) {
@@ -338,6 +352,8 @@ void enableAudio() {
     */  
     listener.setPosition(getDeepestDepth()-450, 0, 0);
     println(getDeepestDepth());
+    
+
 
 }
 
