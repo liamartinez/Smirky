@@ -1,9 +1,17 @@
 
-
+//Kinect
 import org.openkinect.*;
 import org.openkinect.processing.*;
-
 Kinect kinect;
+
+//Toxi
+import toxi.audio.*;
+import toxi.geom.*;
+
+//Audio
+AudioSource sound[];
+SoundListener listener;
+JOALUtil audioSys;
 
 // Size of kinect image
 int w = 640;
@@ -13,11 +21,9 @@ PImage level1;
 PImage level2;
 PImage level3;
 PImage level4;
-
 PImage imgMask; 
 PImage surface;
 
-//mb edits
 PImage depthDataImg;
 PImage blurredDepthImg;
 
@@ -28,10 +34,12 @@ int Threshold3 = 770;
 int Threshold4 = 660;
 int Threshold5 = 350;
 
-int currentLevel = 1;
-int previousLevel = 2;
-
 int[] depth;
+
+boolean enableMask = false; 
+
+
+float returnValue;
 
 
 
@@ -40,9 +48,11 @@ int[] depth;
 
 void setup() {
 
-  size(640, 480,P3D);
+  size(w, h,P2D);
+  
 
-
+  
+  //initialize startup sequence
   println ("Initializing Kiwis .... "); 
   println ("Collecting Watermelons .... "); 
   println ("Calibrating Bananas ...."); 
@@ -54,6 +64,16 @@ void setup() {
   println ("To calibrate Level 4: u and i")  ;
   println ("To calibrate Level 5: o and p "); 
  
+  //initialize Kinect
+  kinect = new Kinect(this);
+  kinect.start();
+  kinect.enableDepth(true);
+  kinect.processDepthImage(true);
+  
+
+  //setupAudio();     //disable this if you dont want audio
+ 
+  
   
   level4 = loadImage("LVL4HELL.png");
   level3 = loadImage("LVL3GEMS2.png");
@@ -63,14 +83,12 @@ void setup() {
   imgMask = loadImage ("newmask2.jpg"); 
   imgMask.loadPixels();
 
-  kinect = new Kinect(this);
-  kinect.start();
-  kinect.enableDepth(true);
-  kinect.processDepthImage(true);
+
 
   surface = new PImage(640, 480);
 
-
+  
+  
 
 }
 
@@ -84,77 +102,66 @@ void setup() {
 
 void draw() { 
   
+  depth = kinect.getRawDepth();
   background(0);
 
 
+  enableMask(); //remove this if you dont want to use a mask
+  drawSurface(); //the original without blending
+  //drawSurfaceBlended(); //with blending
+  
+  getDeepestDepth(); //get the deepest depth based on a narrow area in the middle
+ // enableAudio(); //remember to enable setupAudio() in the setup 
+ 
+  
+  image (surface, 0,0); //draw the surface
 
 
-  depth = kinect.getRawDepth();
+}
 
-  // keep track of the deepest depth that we know about. this is for sound and for the movies. 
-  float deepestdepth = 2000;
-  float averagedepth = 0;
-  float numpoints = 0;
 
-  for (int x = 300; x < 350; x++) {
-    for (int y = 200; y < 250; y++) {
-      int p = (640 * y) + x;
 
-      // get the depth at this location
-      float currentdepth = depth[p];
 
-      averagedepth = averagedepth + currentdepth;
-      numpoints++;
 
-      if (currentdepth < deepestdepth)
-      {
-        deepestdepth = currentdepth;
-      }
-    }
-  }
 
- averagedepth = averagedepth / numpoints;
+
+
+
+
+
+
+
+// next on to do list: make a function for blur
 
 
    //blurring the kinect data : enable this if needed      
-   
+   /*
    blurredDepthImg = new PImage( 640, 480 );
    System.arraycopy( kinect.getDepthImage().pixels, 0, blurredDepthImg.pixels, 0, kinect.getDepthImage().pixels.length );
    fastblur( blurredDepthImg, 15 ); // change the last number for the radius of the blur
+   */
    
-   
 
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-
-
-
-  // go through the entire banana
-  ////////////////////////////////////////////////////////////////////////////////////////// THIS IS THE BIG FOR LOOP
-
-  for (int x = 0; x < 640; x++) {
+void drawSurface(){
+ for (int x = 0; x < 640; x++) {
     for (int y = 0; y < 480; y++) {
 
       int p = (640 * y) + x; 
-
-
-
-
+   
 
       // is this a black pixel in the image mask?
       color maskcolor = imgMask.pixels[p];
       float redness = red(maskcolor);
-
-      if (redness > 50)
+      if (enableMask && redness > 50)
       {
-        surface.pixels[p] = level1.pixels[p];
+        surface.pixels[p] = color (0,0,0);
       }
 
 
-      ///////////////////////////// THIS IS FOR LEFT IMAGE ////////////////////////////////
-
-/*
       // calculate the percentage values for each level
-      if (depth[p] > Threshold1)
+      else if (depth[p] > Threshold1)
       {
         surface.pixels[p] = level1.pixels[p];
       }
@@ -174,10 +181,41 @@ void draw() {
     surface.pixels[p] = level4.pixels[p];
      }
 
-*/
-      // we start blending here
 
-       if (depth[p] < Threshold1 && depth[p] > Threshold2)
+      // all else fails -- do this        
+      else
+      {
+        surface.pixels[p] = level1.pixels[p];
+      }
+
+    }
+
+  }  
+
+}
+
+
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+void drawSurfaceBlended(){
+
+
+  for (int x = 0; x < 640; x++) {
+    for (int y = 0; y < 480; y++) {
+
+      int p = (640 * y) + x;           
+
+      // is this a black pixel in the image mask?
+
+      color maskcolor = imgMask.pixels[p];
+      float redness = red(maskcolor);
+      if (enableMask && redness > 50)
+      {
+        surface.pixels[p] = color (0,0,0);
+      }
+
+
+       else if (depth[p] < Threshold1 && depth[p] > Threshold2)
       {
         // map between level 1 and level 2
         float percent_level1 = map(depth[p], Threshold2, Threshold1, 0, 1); 
@@ -260,9 +298,8 @@ void draw() {
         // assign that color to this pixel
         surface.pixels[p] = newcolor;
         
-       
-      }        
-
+      }
+ 
       // all else fails -- do this        
       else
       {
@@ -272,21 +309,108 @@ void draw() {
     }
 
   }  
-  image (surface, 0,0); 
- // image (blurredDepthImg, 0,0);
   
   
+
+
 }
 
 
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void setupAudio() {
+
+ //initialize Audio
+  audioSys = JOALUtil.getInstance();
+  listener=audioSys.getListener();
+
+  sound = new AudioSource[1];
+
+  sound[0]=audioSys.generateSourceFromFile(dataPath("WIND1_11.wav"));
+  sound[0].setPosition(300, 0, 0); 
+  sound[0].setReferenceDistance(20);
+
+  sound[0].setLooping(true);
+  sound[0].play();
+ 
+
+  for (int g = 0; g < sound.length; g++) {
+    sound[g].play();
+  }
+
+}
 
 
-/////////////////////////////////////////////////////////////////////////////////// END DRAW //////////////////////////////////////////////////////////
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void enableAudio() {
+//enableAudio needs getDeepestDepth() declared
 
 
 
+    /* //need loop?
+    for (int x = 0; x < 640; x++) {
+    for (int y = 0; y < 480; y++) {  
+    */  
+    listener.setPosition(getDeepestDepth()-450, 0, 0);
+    println(getDeepestDepth());
+    
 
 
+}
+
+
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------
+float getDeepestDepth() {
+//getDeepestDepth is for audio or anything that needs to change based on deepest depth, not pixel by pixel
+  
+  float deepestdepth = 2000;
+  float averagedepth = 0;
+  float numpoints = 0;
+
+  for (int x = 300; x < 350; x++) {
+    for (int y = 200; y < 250; y++) {
+      int p = (640 * y) + x;
+
+      // get the depth at this location
+      float currentdepth = depth[p];
+
+      averagedepth = averagedepth + currentdepth;
+      numpoints++;
+
+      if (currentdepth < deepestdepth)
+      {
+        deepestdepth = currentdepth;
+
+      }
+      
+      returnValue = deepestdepth;
+
+      
+    }
+  }
+
+/* //this doesnt work; fix
+averagedepth = averagedepth / numpoints; 
+println ("average " + averagedepth);
+println ("numpoint " + numpoints);
+println ("deepest " + deepestdepth);
+
+*/
+
+
+return returnValue; 
+
+}
+
+
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+void enableMask() {
+  enableMask = true;
+}
+  
+
+
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 void mouseClicked() {
@@ -295,6 +419,7 @@ void mouseClicked() {
   println(depth[p]);
 }
 
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 public void keyPressed() {
@@ -335,6 +460,8 @@ public void keyPressed() {
   println("Level 1:" + Threshold1 + " , Level 2: " + Threshold2 + " ,Level 3:" + Threshold3 + " , Level 4 " + Threshold4 + " , Level 5 " + Threshold5);
 }
 
+
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 void fastblur(PImage img, int radius) {
   if (radius<1) {
@@ -413,7 +540,7 @@ void fastblur(PImage img, int radius) {
 }
 
 
-
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 void stop () {
 
