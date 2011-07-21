@@ -1,11 +1,21 @@
-////////// Smirkiplops for Comp Cameras////////
-////////// Will "brother may" Jennings & Lia "sister may" Martinez///////
 
 
 
-import java.awt.Rectangle;
+import toxi.physics2d.behaviors.*;
+import toxi.physics2d.*;
+
+import toxi.geom.*;
+import toxi.math.*;
+
+VerletPhysics2D physics;
+VerletParticle2D selected=null;
+
+// squared snap distance for picking particles
+float snapDist=10*10;
+
+//------------------------------------------------------------------------
+
 import org.openkinect.processing.Kinect;
-import processing.core.PImage;
 
 Kinect kinect;
 
@@ -35,14 +45,19 @@ int counter = 0;
 ///maximum smirkys
 int MAX = 20;
 Smirky[] t = new Smirky[MAX];
+Blanket[] b= new Blanket [MAX]; 
 
 boolean showVectors = false;
 boolean returnValue = false; 
 
-
+//-----------------------------------------------------------------------------
 
 void setup() {
   size(w,h);
+  
+  physics=new VerletPhysics2D();
+  physics.addBehavior(new GravityBehavior(new Vec2D(0,0.1)));
+  physics.setWorldBounds(new Rect(0,0,width,height));
   psystems = new ArrayList();
 
   //kinect 
@@ -63,6 +78,7 @@ void setup() {
     PVector ve = new PVector(random(-.5,5.),random(-.5,.5));
     PVector lo = new PVector(random(width),random(height));
     t[i] = new Smirky(ac,ve,lo,random(8,16));
+    b[i] = new Blanket(ac,ve,lo,random(8,16));
   }
 
 
@@ -76,12 +92,11 @@ void keyPressed() {
 }
 
 
-///////////////////////////////// DRAW /////////////////////////////////////////
+//------------------------------------------------------------------------------------
 void draw() {
 
 image(kinect.getVideoImage(),0,0);
  // background(255);
-
 
 
   /////kinect///
@@ -92,11 +107,7 @@ image(kinect.getVideoImage(),0,0);
 
 
   //this makes attractors in the areas  
- makeSpot (); 
-
-
-
-
+   makeSpot (); 
   updatePixels();
 
 
@@ -112,20 +123,14 @@ image(kinect.getVideoImage(),0,0);
 
   for (int q = 0; q < t.length; q++) {
     t[q].go();
+    b[q].display();     
+    b[q].update();    
+    //physics.update();
   }
 }
 
 
-////////////////////////// END DRAW ////////////////////////////////////////////////////
-
-// When the mouse is pressed, add a new Finger system
-//void mousePressed() {
-//  psystems.add(new ParticleSystem(int(random(1,5)),new PVector(mouseX,mouseY)));
-//}
-
-//void mousePressed() {
-//  psystems.add(new ParticleSystem(int(random(1,5)),new PVector(mouseX,mouseY)));
-//}
+//------------------------------------------------------------------------------------
 
 
 //// if hand is within frontThreshold and backThreshold, return true
@@ -150,6 +155,8 @@ boolean fingerDown () {
   return returnValue;
 }
 
+
+//------------------------------------------------------------------------------------
 
 // This makes new attractors
 void makeSpot () {
@@ -179,10 +186,12 @@ void makeSpot () {
   }
 
   //fingerX and fingerY are the location of the new attractors
+
+  if (all != 0) {
   fingerX = width - allX / all;
   fingerY =  allY / all;
 
-  if (all != 0) {
+
 
 if (dist(lastX,lastY,fingerX, fingerY) > distanceApart){
   lastX = fingerX;
@@ -201,7 +210,7 @@ if (dist(lastX,lastY,fingerX, fingerY) > distanceApart){
   println ("FingerX = " + fingerX + " FingerY= " + fingerY);
 }
 
-
+//------------------------------------------------------------------------------------
 
 //////stop kinect///////
 public void stop() {
