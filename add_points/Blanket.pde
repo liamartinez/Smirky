@@ -49,7 +49,7 @@ class Blanket {
     }
 
 
-    
+ /*   
     Particle topleft= particles.get(int(loc.x));
     topleft.lock();
 
@@ -58,7 +58,7 @@ class Blanket {
     topright.lock();
     
     
-    
+  */  
   }
 
   void display() {
