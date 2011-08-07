@@ -11,9 +11,9 @@ class Attractor extends VerletParticle2D {
     set(loc);
  
     r = 24;
-    lifespan = 5.0;
+    lifespan = 2.0;
     physics.addParticle(this);
-    physics.addBehavior(new AttractionBehavior(this, width, 0.1));
+    physics.addBehavior(new AttractionBehavior(this, width, .1));
   }
 
   void display () {
@@ -24,7 +24,7 @@ class Attractor extends VerletParticle2D {
   }
 
   void lifespan() {
-    lifespan -= .25;
+    lifespan -= .25 ;
   }
   
   

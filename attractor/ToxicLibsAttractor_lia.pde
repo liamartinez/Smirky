@@ -145,7 +145,8 @@ void makeSpot () {
 
   for (int x = 0; x < w; x ++) {
     for (int y = 0; y < h; y ++) {
-      int offset = x + y * w;
+      //int offset = x + y * w;
+      int offset = w-x-1+y*w;
       int rawDepth = depth[offset];
       //  if (depth == null) return;
       if (rawDepth < backThreshold) {
