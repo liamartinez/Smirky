@@ -1,14 +1,17 @@
 class Attractor extends VerletParticle2D {
 
   float r;
-  float timer;
+  float lifespan;
 
 
   Attractor (Vec2D loc) {
     super (loc);
  
+    lock();
+    set(loc);
+ 
     r = 24;
-    timer = 5.0;
+    lifespan = 5.0;
     physics.addParticle(this);
     physics.addBehavior(new AttractionBehavior(this, width, 0.1));
   }
@@ -20,12 +23,14 @@ class Attractor extends VerletParticle2D {
     //ellipse (l.x, l.y, r*2, r*2);
   }
 
-  void timer() {
-    timer -= 1.0;
+  void lifespan() {
+    lifespan -= .25;
   }
+  
+  
 
   boolean dead() {
-    if (timer <= 0.0) {
+    if (lifespan < 0.0) {
       return true;
     } 
     else {

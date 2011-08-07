@@ -29,7 +29,7 @@ int fingerY;
 boolean oktoplace = true; 
 int lastX;
 int lastY;
-int distanceApart = 5; 
+int distanceApart = 20; 
 
 int counter = 0; 
 
@@ -72,7 +72,7 @@ void draw () {
   image(kinect.getVideoImage(), 0, 0);
   loadPixels ();
   
-  fingerDown() ;
+ // fingerDown() ;
   makeSpot (); 
   updatePixels();
   
@@ -89,9 +89,13 @@ void draw () {
     ParticleSystem psys = (ParticleSystem) psystems.get(i);
     //psys.smirkys();
     psys.run();
+    
+    /*
     if (psys.dead()) {
       psystems.remove(i);
     }
+    */
+   
   }
   
 }
@@ -100,6 +104,7 @@ void draw () {
 
 //---------------------------------------------------------------------------------------
 
+/*
 
 //// if hand is within frontThreshold and backThreshold, return true
 boolean fingerDown () { 
@@ -122,6 +127,8 @@ boolean fingerDown () {
   return returnValue;
 }
 
+*/
+
 //---------------------------------------------------------------------------------------
 
 // This makes new attractors
@@ -135,8 +142,6 @@ void makeSpot () {
 
   int pointX; 
   int pointY; 
-
-
 
   for (int x = 0; x < w; x ++) {
     for (int y = 0; y < h; y ++) {
@@ -158,17 +163,12 @@ void makeSpot () {
   fingerX = width - (allX / all);
   fingerY =  allY / all;
 
-//psystems.add(new ParticleSystem(new Vec2D(fingerX, fingerY)));
-
-
     if (dist(lastX, lastY, fingerX, fingerY) > distanceApart) {
       lastX = fingerX;
       lastY = fingerY;
 
       psystems.add(new ParticleSystem(new Vec2D(fingerX, fingerY)));
       
-
-
       oktoplace = false; 
       counter++; 
     }
