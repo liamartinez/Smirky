@@ -22,7 +22,7 @@ int depthYPicOffset = 30;
 
 //these offsets change the range for creating attractors
 int frontThreshold = 440;
-int backThreshold = 500;
+int backThreshold = 480;
 
 int fingerX; 
 int fingerY; 
@@ -171,7 +171,8 @@ void makeSpot () {
       lastX = fingerX;
       lastY = fingerY;
 
-      psystems.add(new ParticleSystem(new Vec2D(fingerX, fingerY)));
+      //psystems.add(new ParticleSystem(new Vec2D(fingerX, fingerY)));
+       psystems.add(new ParticleSystem(new Vec2D(lastX, lastY)));
       
       oktoplace = false; 
       counter++; 
@@ -185,8 +186,8 @@ void makeSpot () {
 
 
 }
-
+/*
   void quit() {
     kinect.quit();
   }
-
+*/

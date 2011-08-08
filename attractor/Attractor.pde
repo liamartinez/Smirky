@@ -13,7 +13,7 @@ class Attractor extends VerletParticle2D {
     r = 24;
     lifespan = 2.0;
     physics.addParticle(this);
-    physics.addBehavior(new AttractionBehavior(this, width, .1));
+    physics.addBehavior(new AttractionBehavior(this, width, 1));
   }
 
   void display () {
