@@ -44,7 +44,8 @@ void setup () {
   size (w, h, P2D);
   smooth();
   physics = new VerletPhysics2D ();
-  physics.setDrag (0.01);
+  physics.setDrag (0.05f);
+  physics.setWorldBounds(new Rect(0, 0, width, height));
 
   asystems = new ArrayList();
 
@@ -55,7 +56,7 @@ void setup () {
   kinect.enableRGB(true);
   kinect.processDepthImage(false);
 
-  physics.setWorldBounds(new Rect(0, 0, width, height));
+
 
 
   particles = new ArrayList<Particle>();
@@ -82,21 +83,6 @@ void draw () {
   // attractor.display();
   for (Particle p: particles) {
     p.display();
-
-  //debugging
-  float sS = p.getSmirkyStrength();
-    if (key == CODED) {
-      if (keyCode == LEFT) {
-        sS+=5;
-        p.setSmirkyStrength(sS);
-      } 
-      else if (keyCode == RIGHT) {
-        sS-=5;
-        p.setSmirkyStrength(sS);
-      }
-    }
-  
-    println ("Smirky Strength is" + sS); 
   
   }
   
@@ -173,7 +159,6 @@ void makeSpot () {
       lastX = fingerX;
       lastY = fingerY;
 
-      //asystems.add(new AttractorSystem(new Vec2D(fingerX, fingerY)));
       asystems.add(new AttractorSystem(new Vec2D(lastX, lastY)));
 
       oktoplace = false; 
