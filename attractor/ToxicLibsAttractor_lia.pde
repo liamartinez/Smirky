@@ -3,7 +3,7 @@ import toxi.physics2d.*;
 import toxi.physics2d.behaviors.*;
 import org.openkinect.processing.Kinect;
 
-ArrayList<Particle> particles;
+ArrayList<Smirky> Smirkys;
 
 //Attractor attractor;
 
@@ -59,9 +59,9 @@ void setup () {
 
 
 
-  particles = new ArrayList<Particle>();
+  Smirkys = new ArrayList<Smirky>();
   for (int i = 0; i < numSmirkies; i++) {
-    particles.add(new Particle(new Vec2D(random(width), random(height))));
+    Smirkys.add(new Smirky(new Vec2D(random(width), random(height))));
   }
 }
 
@@ -81,7 +81,7 @@ void draw () {
   physics.update ();
 
   // attractor.display();
-  for (Particle p: particles) {
+  for (Smirky p: Smirkys) {
     p.display();
   
   }
@@ -94,33 +94,6 @@ void draw () {
 }
 
 
-
-//---------------------------------------------------------------------------------------
-
-/*
-
- //// if hand is within frontThreshold and backThreshold, return true
- boolean fingerDown () { 
- PImage myImage = kinect.getVideoImage();
- // Get the raw depth as array of integers
- int[] depth = kinect.getRawDepth();
- // We're just going to calculate and draw every 4th pixel (equivalent of 160x120)
- int skip = 1;
- 
- for (int x = 0; x < w; x += skip) {
- for (int y = 0; y < h; y += skip) {
- int offset = x + y * w;
- int rawDepth = depth[offset];
- if (rawDepth > frontThreshold && rawDepth < backThreshold) {
- returnValue = true;
- }
- }
- }
- 
- return returnValue;
- }
- 
- */
 
 //---------------------------------------------------------------------------------------
 
