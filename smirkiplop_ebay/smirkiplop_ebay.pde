@@ -22,6 +22,7 @@ PImage level2;
 PImage level3;
 PImage level4;
 PImage imgMask; 
+PImage imgMaskAlpha; 
 PImage surface;
 
 PImage depthDataImg;
@@ -80,9 +81,29 @@ void setup() {
   level2 = loadImage("LV2Sand.png");
   level1 = loadImage("LVL1moon.png");
 
-  imgMask = loadImage ("newmask2.jpg"); 
+  imgMask = loadImage ("smirkymask_white.jpg"); 
+  imgMaskAlpha = loadImage ("smirkymask.jpg"); 
   imgMask.loadPixels();
+  imgMaskAlpha.loadPixels(); 
+  imgMaskAlpha.mask(imgMask);
 
+<<<<<<< HEAD
+=======
+  surface = new PImage(640, 480);
+
+  //----------- the following is for the Smirkies and the Attractors ---------//
+
+
+  //physics
+  physics = new VerletPhysics2D ();
+  physics.setDrag (0.05f);
+  // This is the center of the world
+  Vec2D center = new Vec2D(width/2,height/2);
+  // these are the worlds dimensions (50%, a vector pointing out from the center in both directions)
+  Vec2D extent = new Vec2D(230, 230);
+  //physics.setWorldBounds(new Rect(0, 0, width, height));  
+  physics.setWorldBounds(Rect.fromCenterExtent (center, extent));  
+>>>>>>> 4f820b429ac564cd19ac7fbe26f9ae594f33556c
 
 
   surface = new PImage(640, 480);
@@ -123,6 +144,17 @@ void draw() {
 
 
 
+<<<<<<< HEAD
+=======
+  // ... this one calls the Attractors
+  for (int i = asystems.size()-1; i >= 0; i--) {
+    AttractorSystem asys = (AttractorSystem) asystems.get(i);
+    asys.run();
+  }
+  
+  image (imgMaskAlpha, 0,0); 
+}
+>>>>>>> 4f820b429ac564cd19ac7fbe26f9ae594f33556c
 
 
 // next on to do list: make a function for blur
@@ -447,6 +479,7 @@ public void keyPressed() {
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+<<<<<<< HEAD
 void fastblur(PImage img, int radius) {
   if (radius<1) {
     return;
@@ -492,6 +525,20 @@ void fastblur(PImage img, int radius) {
       gsum+=((p1 & 0x00ff00)-(p2 & 0x00ff00))>>8;
       bsum+= (p1 & 0x0000ff)-(p2 & 0x0000ff);
       yi++;
+=======
+  for (int x = 0; x < w; x ++) {
+    for (int y = 0; y < h; y ++) {
+      int offset = x + y * w;
+      //int offset = w-x-1+y*w;
+      int rawDepth = depth[offset];
+      //  if (depth == null) return;
+      if (rawDepth < backThreshold) {
+      //if (rawDepth < Threshold5) {  
+        allX += x;
+        allY += y;
+        all++;
+      }
+>>>>>>> 4f820b429ac564cd19ac7fbe26f9ae594f33556c
     }
     yw+=w;
   }
