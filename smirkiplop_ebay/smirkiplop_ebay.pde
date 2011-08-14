@@ -1,3 +1,4 @@
+//lia poops well
 
 //Kinect
 import org.openkinect.*;
@@ -10,7 +11,6 @@ import toxi.physics2d.behaviors.*;
 import toxi.audio.*;
 import toxi.geom.*;
 VerletPhysics2D physics;
-
 
 //Audio
 AudioSource sound[];
@@ -105,11 +105,9 @@ void setup() {
   //kinect.enableRGB(true); //if you want picture
 
 
-
-
     //----------- the following is for the background and the audio -----------//
 
-  //setupAudio();     //disable this if you dont want audio
+  setupAudio();     //disable this if you dont want audio
 
   level4 = loadImage("LVL4HELL.png");
   level3 = loadImage("LVL3GEMS2.png");
@@ -148,13 +146,7 @@ void setup() {
   }
 }
 
-
-
-
 //----------------------------------------------------------------------------------------------------------------
-
-
-
 
 void draw() { 
 
@@ -188,7 +180,7 @@ void draw() {
   for (Smirky p: Smirkys) {
     p.display();
   }
-
+2
   // ... this one calls the Attractors
   for (int i = asystems.size()-1; i >= 0; i--) {
     AttractorSystem asys = (AttractorSystem) asystems.get(i);
@@ -197,8 +189,6 @@ void draw() {
   
   image (imgMaskAlpha, 0,0); 
 }
-
-
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -367,19 +357,25 @@ void drawSurfaceBlended() {
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void setupAudio() {
 
-  //initialize Audio
+   //initialize Audio
   audioSys = JOALUtil.getInstance();
   listener=audioSys.getListener();
 
-  sound = new AudioSource[1];
+  sound = new AudioSource[2];
 
-  sound[0]=audioSys.generateSourceFromFile(dataPath("WIND1_11.wav"));
+  sound[0]=audioSys.generateSourceFromFile(dataPath("smirky_conversation.wav"));
   sound[0].setPosition(300, 0, 0); 
-  sound[0].setReferenceDistance(20);
+  sound[0].setReferenceDistance(30);
 
   sound[0].setLooping(true);
   sound[0].play();
 
+  sound[1]=audioSys.generateSourceFromFile(dataPath("smirkyFLY.wav"));
+  sound[1].setPosition(225, 0, 0); 
+  sound[1].setReferenceDistance(30);
+
+  sound[1].setLooping(true);
+  sound[1].play();
 
   for (int g = 0; g < sound.length; g++) {
     sound[g].play();
@@ -541,4 +537,3 @@ void stop () {
 
   kinect.quit();
 }
-

@@ -31,6 +31,10 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+<<<<<<< HEAD
+
+=======
+>>>>>>> d28d0b830f76d8d0cc24708d0fb8cfbeda39ea87
 import toxi.physics2d.behaviors.*;
 import toxi.physics2d.*;
 
@@ -38,20 +42,30 @@ import toxi.geom.*;
 import toxi.math.*;
 
 VerletPhysics2D physics;
+<<<<<<< HEAD
+=======
 VerletParticle2D selected=null;
 
 // squared snap distance for picking particles
 float snapDist=10*10;
+>>>>>>> d28d0b830f76d8d0cc24708d0fb8cfbeda39ea87
 
 Blanket b;
 
 
 void setup() {
+<<<<<<< HEAD
+  size(400,300);
+  smooth();
+  physics=new VerletPhysics2D();
+  physics.addBehavior(new GravityBehavior(new Vec2D(0,0.1)));
+=======
   size(800,600 );
   smooth();
   physics=new VerletPhysics2D();
   physics.addBehavior(new GravityBehavior(new Vec2D(0,0.1)));
   physics.setWorldBounds(new Rect(0,0,width,height));
+>>>>>>> d28d0b830f76d8d0cc24708d0fb8cfbeda39ea87
 
   b = new Blanket();
 }
@@ -65,6 +79,8 @@ void draw() {
   b.display();
 }
 
+<<<<<<< HEAD
+=======
 
 // check all particles if mouse pos is less than snap distance
 void mousePressed() {
@@ -96,3 +112,4 @@ void mouseReleased() {
     selected=null;
   }
 }
+>>>>>>> d28d0b830f76d8d0cc24708d0fb8cfbeda39ea87
