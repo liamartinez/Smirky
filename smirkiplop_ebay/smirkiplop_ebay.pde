@@ -27,6 +27,7 @@ PImage level2;
 PImage level3;
 PImage level4;
 PImage imgMask; 
+PImage imgMaskAlpha; 
 PImage surface;
 
 PImage depthDataImg;
@@ -113,8 +114,11 @@ void setup() {
   level2 = loadImage("LV2Sand.png");
   level1 = loadImage("LVL1moon.png");
 
-  imgMask = loadImage ("newmask2.jpg"); 
+  imgMask = loadImage ("smirkymask_white.jpg"); 
+  imgMaskAlpha = loadImage ("smirkymask.jpg"); 
   imgMask.loadPixels();
+  imgMaskAlpha.loadPixels(); 
+  imgMaskAlpha.mask(imgMask);
 
   surface = new PImage(640, 480);
 
@@ -124,7 +128,12 @@ void setup() {
   //physics
   physics = new VerletPhysics2D ();
   physics.setDrag (0.05f);
-  physics.setWorldBounds(new Rect(0, 0, width, height));  
+  // This is the center of the world
+  Vec2D center = new Vec2D(width/2,height/2);
+  // these are the worlds dimensions (50%, a vector pointing out from the center in both directions)
+  Vec2D extent = new Vec2D(230, 230);
+  //physics.setWorldBounds(new Rect(0, 0, width, height));  
+  physics.setWorldBounds(Rect.fromCenterExtent (center, extent));  
 
   //initialize arrays
   asystems = new ArrayList();
@@ -181,6 +190,8 @@ void draw() {
     AttractorSystem asys = (AttractorSystem) asystems.get(i);
     asys.run();
   }
+  
+  image (imgMaskAlpha, 0,0); 
 }
 
 
@@ -492,6 +503,7 @@ void makeSpot () {
       int rawDepth = depth[offset];
       //  if (depth == null) return;
       if (rawDepth < backThreshold) {
+      //if (rawDepth < Threshold5) {  
         allX += x;
         allY += y;
         all++;
