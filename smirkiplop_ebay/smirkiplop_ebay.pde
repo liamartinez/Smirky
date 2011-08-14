@@ -180,7 +180,7 @@ void draw() {
   for (Smirky p: Smirkys) {
     p.display();
   }
-2
+
   // ... this one calls the Attractors
   for (int i = asystems.size()-1; i >= 0; i--) {
     AttractorSystem asys = (AttractorSystem) asystems.get(i);
