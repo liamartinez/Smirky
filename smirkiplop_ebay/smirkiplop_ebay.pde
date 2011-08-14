@@ -30,6 +30,8 @@ PImage imgMask;
 PImage imgMaskAlpha; 
 PImage surface;
 
+PImage greenbug; 
+
 PImage depthDataImg;
 PImage blurredDepthImg;
 
@@ -113,6 +115,8 @@ void setup() {
   level3 = loadImage("LVL3GEMS2.png");
   level2 = loadImage("LV2Sand.png");
   level1 = loadImage("LVL1moon.png");
+
+  greenbug = loadImage ("bug1_green.png"); 
 
   imgMask = loadImage ("smirkymask_white.jpg"); 
   imgMaskAlpha = loadImage ("smirkymask.jpg"); 
