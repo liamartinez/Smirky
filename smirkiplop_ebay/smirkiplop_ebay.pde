@@ -5,12 +5,8 @@ import org.openkinect.processing.*;
 Kinect kinect;
 
 //Toxi
-import toxi.physics2d.*;
-import toxi.physics2d.behaviors.*;
 import toxi.audio.*;
 import toxi.geom.*;
-VerletPhysics2D physics;
-
 
 //Audio
 AudioSource sound[];
@@ -21,7 +17,6 @@ JOALUtil audioSys;
 int w = 640;
 int h = 480;
 
-//PImages for the levels
 PImage level1;
 PImage level2;
 PImage level3;
@@ -32,7 +27,6 @@ PImage surface;
 PImage depthDataImg;
 PImage blurredDepthImg;
 
-//Threshholds
 int Threshold0; 
 int Threshold1 = 790; 
 int Threshold2 = 780;
@@ -44,43 +38,19 @@ int[] depth;
 
 boolean enableMask = false; 
 
+
 float returnValue;
 
-//Smirkies
-ArrayList<Smirky> Smirkys;
 
-//number of smirkies
-int numSmirkies = 50; 
 
-//Attractors
-ArrayList asystems;
-
-//for getting fingerX & fingerY
-int depthXPicOffset = 30;
-int depthYPicOffset = 30;
-int fingerX; 
-int fingerY; 
-int lastX;
-int lastY;
- 
-//variables that determine if they are too close together
-int distanceApart = 20; 
-boolean oktoplace = true; 
-int counter = 0; 
-
-//these offsets change the range for creating attractors
-int frontThreshold = 440;
-int backThreshold = 480;
-
-//returnValue
-//boolean returnValue = false; 
 
 //----------------------------------------------------------------------------------------------------------
 
 void setup() {
 
   size(w, h, P2D);
-  smooth();
+
+
 
   //initialize startup sequence
   println ("Initializing Kiwis .... "); 
@@ -99,16 +69,13 @@ void setup() {
   kinect.start();
   kinect.enableDepth(true);
   kinect.processDepthImage(true);
-  //kinect.enableRGB(true); //if you want picture
+
+
+  setupAudio();     //disable this if you dont want audio
 
 
 
-
-    //----------- the following is for the background and the audio -----------//
-
-  //setupAudio();     //disable this if you dont want audio
-
-  level4 = loadImage("LVL4HELL.png");
+    level4 = loadImage("LVL4HELL.png");
   level3 = loadImage("LVL3GEMS2.png");
   level2 = loadImage("LV2Sand.png");
   level1 = loadImage("LVL1moon.png");
@@ -116,23 +83,9 @@ void setup() {
   imgMask = loadImage ("newmask2.jpg"); 
   imgMask.loadPixels();
 
+
+
   surface = new PImage(640, 480);
-
-  //----------- the following is for the Smirkies and the Attractors ---------//
-
-
-  //physics
-  physics = new VerletPhysics2D ();
-  physics.setDrag (0.05f);
-  physics.setWorldBounds(new Rect(0, 0, width, height));  
-
-  //initialize arrays
-  asystems = new ArrayList();
-
-  Smirkys = new ArrayList<Smirky>();
-  for (int i = 0; i < numSmirkies; i++) {
-    Smirkys.add(new Smirky(new Vec2D(random(width), random(height))));
-  }
 }
 
 
@@ -145,44 +98,42 @@ void setup() {
 
 void draw() { 
 
-  //----------- the following is for the background and the audio -----------//
-
   depth = kinect.getRawDepth();
   background(0);
 
 
   enableMask(); //remove this if you dont want to use a mask
   drawSurface(); //the original without blending
-  //drawSurfaceBlended(); //with blending
+  drawSurfaceBlended(); //with blending
 
-  getDeepestDepth(); //get the deepest depth based on a narrow area in the middle
-  //enableAudio(); //remember to enable setupAudio() in the setup 
+  //getDeepestDepth(); //get the deepest depth based on a narrow area in the middle
+  enableAudio(); //remember to enable setupAudio() in the setup 
 
 
   image (surface, 0, 0); //draw the surface
-
-  //----------- the following is for the Smirkies and the Attractors -----------//
-
-  loadPixels ();
-
-  makeSpot (); 
-  updatePixels();
-
-  physics.update ();
-
-  // I dont know why they are different kinds of for loops but
-  // the first one calls the Smirkies and ...
-  for (Smirky p: Smirkys) {
-    p.display();
-  }
-
-  // ... this one calls the Attractors
-  for (int i = asystems.size()-1; i >= 0; i--) {
-    AttractorSystem asys = (AttractorSystem) asystems.get(i);
-    asys.run();
-  }
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+// next on to do list: make a function for blur
+
+
+//blurring the kinect data : enable this if needed      
+/*
+   blurredDepthImg = new PImage( 640, 480 );
+ System.arraycopy( kinect.getDepthImage().pixels, 0, blurredDepthImg.pixels, 0, kinect.getDepthImage().pixels.length );
+ fastblur( blurredDepthImg, 15 ); // change the last number for the radius of the blur
+ */
 
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -356,26 +307,40 @@ void setupAudio() {
   audioSys = JOALUtil.getInstance();
   listener=audioSys.getListener();
 
-  sound = new AudioSource[1];
+  sound = new AudioSource[2];
 
-  sound[0]=audioSys.generateSourceFromFile(dataPath("WIND1_11.wav"));
+  sound[0]=audioSys.generateSourceFromFile(dataPath("smirky_conversation.wav"));
   sound[0].setPosition(300, 0, 0); 
-  sound[0].setReferenceDistance(20);
+  sound[0].setReferenceDistance(10);
 
   sound[0].setLooping(true);
   sound[0].play();
 
+  sound[1]=audioSys.generateSourceFromFile(dataPath("smirkyFLY.wav"));
+  sound[1].setPosition(225, 0, 0); 
+  sound[1].setReferenceDistance(5);
+
+  sound[1].setLooping(true);
+  sound[1].play();
+
 
   for (int g = 0; g < sound.length; g++) {
-    sound[g].play();
+      sound[g].play();
   }
 }
 
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void enableAudio() {
+
   //enableAudio needs getDeepestDepth() declared
 
+
+
+  /* //need loop?
+   for (int x = 0; x < 640; x++) {
+   for (int y = 0; y < 480; y++) {  
+   */
   listener.setPosition(getDeepestDepth()-450, 0, 0);
   println(getDeepestDepth());
 }
@@ -407,6 +372,14 @@ float getDeepestDepth() {
       returnValue = deepestdepth;
     }
   }
+
+  /* //this doesnt work; fix
+   averagedepth = averagedepth / numpoints; 
+   println ("average " + averagedepth);
+   println ("numpoint " + numpoints);
+   println ("deepest " + deepestdepth);
+   
+   */
 
 
   return returnValue;
@@ -471,55 +444,87 @@ public void keyPressed() {
   println("Level 1:" + Threshold1 + " , Level 2: " + Threshold2 + " ,Level 3:" + Threshold3 + " , Level 4 " + Threshold4 + " , Level 5 " + Threshold5);
 }
 
-//---------------------------------------------------------------------------------------
-
-// This makes new attractors
-void makeSpot () {
-
-  int[] depth = kinect.getRawDepth();
-
-  int allX = 0;
-  int allY = 0;
-  int all = 0;
-
-  int pointX; 
-  int pointY; 
-
-  for (int x = 0; x < w; x ++) {
-    for (int y = 0; y < h; y ++) {
-      int offset = x + y * w;
-      //int offset = w-x-1+y*w;
-      int rawDepth = depth[offset];
-      //  if (depth == null) return;
-      if (rawDepth < backThreshold) {
-        allX += x;
-        allY += y;
-        all++;
-      }
-    }
-  }
-
-  if (all != 0) {
-    //fingerX and fingerY are the location of the new attractors
-    fingerX = allX / all;
-    fingerY =  allY / all;
-
-    if (dist(lastX, lastY, fingerX, fingerY) > distanceApart) {
-      lastX = fingerX;
-      lastY = fingerY;
-
-      asystems.add(new AttractorSystem(new Vec2D(lastX, lastY)));
-
-      oktoplace = false; 
-      counter++;
-    }
-  }
-}
-
-
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+void fastblur(PImage img, int radius) {
+  if (radius<1) {
+    return;
+  }
+  img.loadPixels();
+  int w=img.width;
+  int h=img.height;
+  int wm=w-1;
+  int hm=h-1;
+  int wh=w*h;
+  int div=radius+radius+1;
+  int r[]=new int[wh];
+  int g[]=new int[wh];
+  int b[]=new int[wh];
+  int rsum, gsum, bsum, x, y, i, p, p1, p2, yp, yi, yw;
+  int vmin[] = new int[max(w, h)];
+  int vmax[] = new int[max(w, h)];
+  int[] pix=img.pixels;
+  int dv[]=new int[256*div];
+  for (i=0;i<256*div;i++) {
+    dv[i]=(i/div);
+  }
+  yw=yi=0;
+  for (y=0;y<h;y++) {
+    rsum=gsum=bsum=0;
+    for (i=-radius;i<=radius;i++) {
+      p=pix[yi+min(wm, max(i, 0))];
+      rsum+=(p & 0xff0000)>>16;
+      gsum+=(p & 0x00ff00)>>8;
+      bsum+= p & 0x0000ff;
+    }
+    for (x=0;x<w;x++) {
+      r[yi]=dv[rsum];
+      g[yi]=dv[gsum];
+      b[yi]=dv[bsum];
+      if (y==0) {
+        vmin[x]=min(x+radius+1, wm);
+        vmax[x]=max(x-radius, 0);
+      } 
+      p1=pix[yw+vmin[x]];
+      p2=pix[yw+vmax[x]];
+      rsum+=((p1 & 0xff0000)-(p2 & 0xff0000))>>16;
+      gsum+=((p1 & 0x00ff00)-(p2 & 0x00ff00))>>8;
+      bsum+= (p1 & 0x0000ff)-(p2 & 0x0000ff);
+      yi++;
+    }
+    yw+=w;
+  }
+  for (x=0;x<w;x++) {
+    rsum=gsum=bsum=0;
+    yp=-radius*w;
+    for (i=-radius;i<=radius;i++) {
+      yi=max(0, yp)+x;
+      rsum+=r[yi];
+      gsum+=g[yi];
+      bsum+=b[yi];
+      yp+=w;
+    }
+    yi=x;
+    for (y=0;y<h;y++) {
+      pix[yi]=0xff000000 | (dv[rsum]<<16) | (dv[gsum]<<8) | dv[bsum];
+      if (x==0) {
+        vmin[y]=min(y+radius+1, hm)*w;
+        vmax[y]=max(y-radius, 0)*w;
+      } 
+      p1=x+vmin[y];
+      p2=x+vmax[y];
+      rsum+=r[p1]-r[p2];
+      gsum+=g[p1]-g[p2];
+      bsum+=b[p1]-b[p2];
+      yi+=w;
+    }
+  }
+  img.updatePixels();
+}
+
+
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 void stop () {
 
