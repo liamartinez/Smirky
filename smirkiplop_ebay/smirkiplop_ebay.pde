@@ -96,6 +96,11 @@ void setup() {
   println ("To calibrate Level 3: t and y");
   println ("To calibrate Level 4: u and i")  ;
   println ("To calibrate Level 5: o and p "); 
+  println (" "); 
+  println (" "); 
+  println ("... be patient this step takes a while ... ");
+  println (" :-) ");
+
 
   //initialize Kinect
   kinect = new Kinect(this);
@@ -122,7 +127,7 @@ void setup() {
   imgMaskAlpha.loadPixels(); 
   imgMaskAlpha.mask(imgMask);
 
-  surface = new PImage(640, 480);
+  surface = new PImage(width, height);
 
   //----------- the following is for the Smirkies and the Attractors ---------//
 
