@@ -1,5 +1,3 @@
-//lia poops well
-
 //Kinect
 import org.openkinect.*;
 import org.openkinect.processing.*;
@@ -42,6 +40,14 @@ int Threshold2 = 815;
 int Threshold3 = 805;
 int Threshold4 = 800;
 int Threshold5 = 790;
+
+//SmirkyLimits
+int SmirkyStartX = 212; 
+int SmirkyEndX = 476; 
+int SmirkyStartY = 139; 
+int SmirkyEndY = 359; 
+
+
 
 int[] depth;
 
@@ -160,8 +166,6 @@ void draw() {
   depth = kinect.getRawDepth();
   background(0);
 
-
-  enableMask(); //remove this if you dont want to use a mask
   drawSurface(); //the original without blending
   //drawSurfaceBlended(); //with blending
 
@@ -192,6 +196,7 @@ void draw() {
     asys.run();
   }
   
+  //remove this if you dont want to use a mask
   image (imgMaskAlpha, 0,0); 
 }
 
@@ -203,18 +208,8 @@ void drawSurface() {
 
       int p = (640 * y) + x; 
 
-
-      // is this a black pixel in the image mask?
-      color maskcolor = imgMask.pixels[p];
-      float redness = red(maskcolor);
-      if (enableMask && redness > 50)
-      {
-        surface.pixels[p] = color (0, 0, 0);
-      }
-
-
       // calculate the percentage values for each level
-      else if (depth[p] > Threshold1)
+      if (depth[p] > Threshold1)
       {
         surface.pixels[p] = level1.pixels[p];
       }
@@ -442,8 +437,8 @@ void enableMask() {
 
 void mouseClicked() {
   int p = mouseX + (640 * mouseY);
-
-  println(depth[p]);
+  println ("mouse location: " + mouseX + ", " +  mouseY); 
+  println("depth " + depth[p]);
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -499,16 +494,18 @@ void makeSpot () {
   int all = 0;
 
   int pointX; 
-  int pointY; 
+  int pointY;
 
-  for (int x = 0; x < 540; x ++) {
-    for (int y = 0; y < 380; y ++) {
+  //for (int x = 212; x < 476; x ++) {
+   //for (int y = 139; y < 359; y ++) {
+   for (int x = SmirkyStartX; x < SmirkyEndX; x ++) {
+    for (int y = SmirkyStartY; y < SmirkyEndY; y ++) { 
       int offset = x + y * w;
       //int offset = w-x-1+y*w;
       int rawDepth = depth[offset];
       //  if (depth == null) return;
       //if (rawDepth < backThreshold) {
-      if (rawDepth < Threshold1) {  
+      if (rawDepth < Threshold4) {  
         allX += x;
         allY += y;
         all++;
