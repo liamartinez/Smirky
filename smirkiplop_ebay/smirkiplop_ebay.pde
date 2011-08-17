@@ -501,8 +501,8 @@ void makeSpot () {
   int pointX; 
   int pointY; 
 
-  for (int x = 0; x < 300; x ++) {
-    for (int y = 0; y < 300; y ++) {
+  for (int x = 0; x < 540; x ++) {
+    for (int y = 0; y < 380; y ++) {
       int offset = x + y * w;
       //int offset = w-x-1+y*w;
       int rawDepth = depth[offset];
