@@ -8,7 +8,7 @@ class Smirky extends VerletParticle2D {
     super(loc);
     r = 13;
     //ro = 0; 
-    ro = random (-PI,PI*2);
+    //ro = random (-PI,PI*2);
 
     //this is to add repulsion behavior
     physics.addParticle(this);
@@ -19,16 +19,16 @@ class Smirky extends VerletParticle2D {
     fill (175);
     stroke (0);
 
-    pushMatrix();
-    translate(x, y);
+    //pushMatrix();
+    //translate(x, y);
     //ellipse (x, y, r*2, r*2);
-    rotate(ro);  
+    //rotate(ro);  
     
     //imageMode (CENTER); 
-    image (greenbug, 0, 0, r*2, r*2); 
+    image (greenbug, x, y, r*2, r*2); 
 
     
-    popMatrix();
+    //popMatrix();
     
 
   }

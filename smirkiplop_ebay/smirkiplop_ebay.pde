@@ -37,11 +37,11 @@ PImage blurredDepthImg;
 
 //Threshholds
 int Threshold0; 
-int Threshold1 = 790; 
-int Threshold2 = 780;
-int Threshold3 = 770;
-int Threshold4 = 660;
-int Threshold5 = 350;
+int Threshold1 = 825; 
+int Threshold2 = 815;
+int Threshold3 = 805;
+int Threshold4 = 800;
+int Threshold5 = 790;
 
 int[] depth;
 
@@ -121,8 +121,8 @@ void setup() {
 
   greenbug = loadImage ("bug1_green.png"); 
 
-  imgMask = loadImage ("smirkymask_white.jpg"); 
-  imgMaskAlpha = loadImage ("smirkymask.jpg"); 
+  imgMask = loadImage ("mask_white2.jpg"); 
+  imgMaskAlpha = loadImage ("mask_black.jpg"); 
   imgMask.loadPixels();
   imgMaskAlpha.loadPixels(); 
   imgMaskAlpha.mask(imgMask);
@@ -229,7 +229,7 @@ void drawSurface() {
         surface.pixels[p] = level3.pixels[p];
       }
 
-      else if (depth[p] < Threshold3 && depth[p] > Threshold4)
+      else if (depth[p] < Threshold3)
       {
         surface.pixels[p] = level4.pixels[p];
       }
@@ -501,14 +501,14 @@ void makeSpot () {
   int pointX; 
   int pointY; 
 
-  for (int x = 0; x < w; x ++) {
-    for (int y = 0; y < h; y ++) {
+  for (int x = 0; x < 300; x ++) {
+    for (int y = 0; y < 300; y ++) {
       int offset = x + y * w;
       //int offset = w-x-1+y*w;
       int rawDepth = depth[offset];
       //  if (depth == null) return;
-      if (rawDepth < backThreshold) {
-      //if (rawDepth < Threshold5) {  
+      //if (rawDepth < backThreshold) {
+      if (rawDepth < Threshold1) {  
         allX += x;
         allY += y;
         all++;
