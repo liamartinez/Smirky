@@ -1,4 +1,4 @@
-// class Spore extends the class "VerletSmirky2D"
+
 class Smirky extends VerletParticle2D {
 
   float r;
