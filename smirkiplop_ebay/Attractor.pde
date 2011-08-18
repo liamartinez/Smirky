@@ -13,14 +13,14 @@ class Attractor extends VerletParticle2D {
     set(loc);
 
     lifespan = 2.0;
-     
+
     att = new AttractionBehavior(loc, 250, 0.9f);
     physics.addBehavior(att);
   }
 
   void display () {
     fill(0, 50);
-    ellipse (x, y, 20, 20); 
+    ellipse (x, y, 20, 20);
   }
 
 
@@ -33,15 +33,12 @@ class Attractor extends VerletParticle2D {
     if (lifespan < 0.0) {
       physics.removeBehavior(att);
       return true;
-
     } 
     else {
       return false;
     }
   }
-    
 }
-
 
 
 
