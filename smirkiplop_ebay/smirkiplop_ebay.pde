@@ -68,13 +68,13 @@ float returnValue;
 
 //Smirkies
 ArrayList<Smirky> Smirkys;
+PImage [] smirkyPics = new PImage [3];
 
 //number of smirkies
 int numSmirkies = 50; 
 
 //Attractors
 ArrayList asystems;
-//ArrayList
 
 //for getting fingerX & fingerY
 int depthXPicOffset = 30;
@@ -93,8 +93,7 @@ int counter = 0;
 int frontThreshold = 440;
 int backThreshold = 480;
 
-//returnValue
-//boolean returnValue = false; 
+
 
 //----------------------------------------------------------------------------------------------------------
 
@@ -137,8 +136,6 @@ void setup() {
   level2 = loadImage("LV2Sand.png");
   level1 = loadImage("LVL1moon.png");
 
-  greenbug = loadImage ("bug1_green.png"); 
-
   imgMask = loadImage ("mask_white2.jpg"); 
   imgMaskAlpha = loadImage ("mask_black.jpg"); 
   imgMask.loadPixels();
@@ -149,6 +146,9 @@ void setup() {
 
   //----------- the following is for the Smirkies and the Attractors ---------//
 
+  smirkyPics[0] = loadImage ("bug1_green.png");
+  smirkyPics[1] = loadImage ("bug1_orange.png");
+  smirkyPics[2] = loadImage ("bug1_purple.png");
 
   //physics
   physics = new VerletPhysics2D ();
@@ -201,6 +201,7 @@ void draw() {
   // the first one calls the Smirkies and ...
   for (Smirky p: Smirkys) {
     p.display();
+    //p.update (locationAttractor); 
     p.isSmirkyNear(locationAttractor); 
 
   }
