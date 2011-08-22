@@ -39,14 +39,14 @@ PImage imgMask;
 PImage imgMaskAlpha; 
 PImage surface;
 
-PImage greenbug; 
+//PImage greenbug; 
 
 PImage depthDataImg;
-PImage blurredDepthImg;
+PImage blurredDepthImßg;
 
 //Threshholds
 int Threshold0; 
-int Threshold1 = 825; 
+int Threshold1 = 83; 
 int Threshold2 = 815;
 int Threshold3 = 805;
 int Threshold4 = 800;
@@ -58,20 +58,23 @@ int SmirkyEndX = 476;
 int SmirkyStartY = 139; 
 int SmirkyEndY = 359; 
 
-
-
 int[] depth;
 
 boolean enableMask = false; 
-
 float returnValue;
 
 //Smirkies
 ArrayList<Smirky> Smirkys;
-PImage [] smirkyPics = new PImage [3];
+PImage [] smirkyPics = new PImage [12];
 
 //number of smirkies
 int numSmirkies = 50; 
+
+//Rocks
+ArrayList<Rock> Rocks;
+
+//number of rocks
+int numRocks = 20; 
 
 //Attractors
 ArrayList asystems;
@@ -146,9 +149,18 @@ void setup() {
 
   //----------- the following is for the Smirkies and the Attractors ---------//
 
-  smirkyPics[0] = loadImage ("bug1_green.png");
-  smirkyPics[1] = loadImage ("bug1_orange.png");
-  smirkyPics[2] = loadImage ("bug1_purple.png");
+  smirkyPics[0] = loadImage ("doods/blueDOOD.png");
+  smirkyPics[1] = loadImage ("doods/green_YELLOWeyed_DOOD.png");
+  smirkyPics[2] = loadImage ("doods/greenDOOD.png");
+  smirkyPics[3] = loadImage ("doods/greenestDOOD.png");
+  smirkyPics[4] = loadImage ("doods/lightGREEN_DOOD.png");
+  smirkyPics[5] = loadImage ("doods/pinkDOOD.png");
+  smirkyPics[6] = loadImage ("doods/purpleDOOD.png");
+  smirkyPics[7] = loadImage ("doods/redDOOD.png");
+  smirkyPics[8] = loadImage ("doods/tealDOOD.png");
+  smirkyPics[9] = loadImage ("doods/tealDOOD2.png");
+  smirkyPics[10] = loadImage ("doods/yellowDOOD.png");
+  smirkyPics[11] = loadImage ("doods/yellowDOOD2.png");
 
   //physics
   physics = new VerletPhysics2D ();
@@ -166,7 +178,11 @@ void setup() {
   Smirkys = new ArrayList<Smirky>();
   for (int i = 0; i < numSmirkies; i++) {
     Smirkys.add(new Smirky(new Vec2D(random(width), random(height))));
-
+  }
+  
+    Rocks = new ArrayList<Rock>();
+  for (int i = 0; i < numRocks; i++) {
+    Rocks.add(new Rock(new Vec2D(random(width), random(height))));
   }
 }
 
@@ -203,8 +219,16 @@ void draw() {
     p.display();
     //p.update (locationAttractor); 
     p.isSmirkyNear(locationAttractor); 
-
   }
+  
+  /*
+  //rocks
+    for (Rock r: Rocks) {
+    r.display();
+    //p.update (locationAttractor); 
+    r.isRockNear(locationAttractor); 
+  }
+  */
 
   // ... this one calls the Attractors
   for (int i = asystems.size()-1; i >= 0; i--) {
@@ -214,21 +238,9 @@ void draw() {
     locationAttractor = asys.getAttLocation();
     
   }
-
-
   
   //remove this if you dont want to use a mask
   image (imgMaskAlpha, 0,0); 
-}
-
-
-
-
-
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-void enableMask() {
-  enableMask = true;
 }
 
 

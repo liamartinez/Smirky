@@ -19,7 +19,7 @@ void makeSpot () {
       int rawDepth = depth[offset];
       if (depth == null) return;
       //if (rawDepth < backThreshold) {
-      if (rawDepth < Threshold4) {  
+      if (rawDepth < Threshold3) {  
         allX += x;
         allY += y;
         all++;
