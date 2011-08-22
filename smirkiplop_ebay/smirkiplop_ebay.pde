@@ -8,7 +8,6 @@ Vec2D locationAttractor;
 Vec2D locationSmirky; 
 float distance; 
 
-
 //Kinect
 import org.openkinect.*;
 import org.openkinect.processing.*;
@@ -42,15 +41,21 @@ PImage surface;
 //PImage greenbug; 
 
 PImage depthDataImg;
-PImage blurredDepthImßg;
+PImage blurredDepthImg;
 
 //Threshholds
 int Threshold0; 
-int Threshold1 = 83; 
+int Threshold1 = 830; 
 int Threshold2 = 815;
 int Threshold3 = 805;
 int Threshold4 = 800;
 int Threshold5 = 790;
+
+//SoundThreshholds
+int SoundThresh = 300; 
+int SoundListener = 30;
+int SoundThresh2 = 400;
+int SoundListener2 = 100;
 
 //SmirkyLimits
 int SmirkyStartX = 212; 
@@ -125,7 +130,6 @@ void setup() {
   //initialize Kinect
   kinect = new Kinect(this);
   kinect.start();
-  kinect.enableDepth(true);
   kinect.processDepthImage(true);
   //kinect.enableRGB(true); //if you want picture
 
@@ -217,7 +221,6 @@ void draw() {
   // the first one calls the Smirkies and ...
   for (Smirky p: Smirkys) {
     p.display();
-    //p.update (locationAttractor); 
     p.isSmirkyNear(locationAttractor); 
   }
   
@@ -266,6 +269,19 @@ public void keyPressed() {
   else if (key == 'w') {
     Threshold1++;
   }
+  if (key == 's') {
+    SoundThresh--;
+  }
+  else if (key == 'd') {
+    SoundThresh++;
+  }
+  if (key =='x') {
+    SoundListener++;
+  }
+  else if (key == 'c') 
+  {
+    SoundListener--;
+  }
   if (key == 'e') {
     Threshold2--;
   } 
@@ -291,8 +307,7 @@ public void keyPressed() {
     Threshold5++;
   }
 
-
-  println("Level 1:" + Threshold1 + " , Level 2: " + Threshold2 + " ,Level 3:" + Threshold3 + " , Level 4 " + Threshold4 + " , Level 5 " + Threshold5);
+  println ("Level 1:" + Threshold1 + " , Level 2: " + Threshold2 + " ,Level 3:" + Threshold3 + " , Level 4 " + Threshold4 + " , Level 5 " + Threshold5  );
 }
 
 
