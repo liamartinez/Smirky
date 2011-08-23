@@ -26,10 +26,10 @@ class Smirky extends VerletParticle2D {
 
   void isSmirkyNear(ReadonlyVec2D attloc) {
     float smirkyDist = this.distanceTo(attloc);
-    println ("smirkyDist " + smirkyDist); 
+    //println ("smirkyDist " + smirkyDist); 
     if (smirkyDist < 100) {
       smirkySize = map (smirkyDist, 0, 100, 0, 30);   
-      println ("smirkySize" + smirkySize) ;
+      //println ("smirkySize" + smirkySize) ;
     } 
     else {
       smirkySize = 30;

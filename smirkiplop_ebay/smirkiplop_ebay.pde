@@ -130,6 +130,7 @@ void setup() {
   //initialize Kinect
   kinect = new Kinect(this);
   kinect.start();
+  kinect.enableDepth(true); 
   kinect.processDepthImage(true);
   //kinect.enableRGB(true); //if you want picture
 
@@ -203,7 +204,7 @@ void draw() {
   //drawSurfaceBlended(); //with blending
 
   getDeepestDepth(); //get the deepest depth based on a narrow area in the middle
-  //enableAudio(); //remember to enable setupAudio() in the setup 
+  enableAudio(); //remember to enable setupAudio() in the setup 
 
 
   image (surface, 0, 0); //draw the surface

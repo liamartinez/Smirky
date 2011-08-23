@@ -4,21 +4,21 @@ void setupAudio() {
   audioSys = JOALUtil.getInstance();
   listener=audioSys.getListener();
 
-  sound = new AudioSource[1];
+   sound = new AudioSource[1];
 
-  sound[0]=audioSys.generateSourceFromFile(dataPath("smirky_conversation.wav"));
-  sound[0].setPosition(683, 0, 0); 
-  sound[0].setReferenceDistance(500);
+  sound[0]=audioSys.generateSourceFromFile(dataPath("smirkyFLY.wav"));
+  sound[0].setPosition(375, 0, 0); 
+  sound[0].setReferenceDistance(5);
 
   sound[0].setLooping(true);
   sound[0].play();
 
-  //  sound[1]=audioSys.generateSourceFromFile(dataPath("smirkyFLY.wav"));
-  //  sound[1].setPosition(380, 0, 30); 
-  //  sound[1].setReferenceDistance(420);
-  //
-  //  sound[1].setLooping(true);
-  //  sound[1].play();
+//    sound[1]=audioSys.generateSourceFromFile(dataPath("smirkyFLY.wav"));
+//    sound[1].setPosition(380, 0, 30); 
+//    sound[1].setReferenceDistance(42);
+//  
+//    sound[1].setLooping(true);
+//    sound[1].play();
 
   for (int g = 0; g < sound.length; g++) {
     sound[g].play();
